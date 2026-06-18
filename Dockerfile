@@ -20,8 +20,8 @@ WORKDIR /app
 COPY --from=builder /build/dist/ ./dist/
 COPY --from=builder /build/package.json ./
 COPY --from=builder /build/node_modules/ ./node_modules/
-COPY bin/bridge.js ./bridge.js
+COPY bin/bridge.cjs ./bridge.cjs
 
 EXPOSE 8080
 
-CMD ["node", "bridge.js", "--port", "8080", "--", "node", "dist/index.js"]
+CMD ["node", "bridge.cjs", "--port", "8080", "--", "node", "dist/index.js"]

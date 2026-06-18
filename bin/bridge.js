@@ -2,10 +2,11 @@
 /**
  * Lightweight stdio-to-HTTP bridge for MCP servers.
  * Wraps a stdio MCP server process and exposes it via POST /mcp.
- * Minimal — no dependencies beyond Node.js stdlib.
+ * Zero dependencies — pure Node.js stdlib.
  */
-import { spawn } from "node:child_process";
-import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
+
+const http = require("node:http");
+const { spawn } = require("node:child_process");
 
 const PORT = parseInt(process.env.PORT || "8080");
 const HOST = process.env.HOST || "0.0.0.0";
@@ -18,12 +19,7 @@ if (COMMAND.length === 0) {
 const SEPARATOR = "\n";
 let buffer = "";
 
-interface PendingRequest {
-  resolve: (value: any) => void;
-  reject: (err: Error) => void;
-  timer: ReturnType<typeof setTimeout>;
-}
-const pending = new Map<number, PendingRequest>();
+const pending = new Map();
 let nextId = 1;
 
 // Spawn the MCP server
@@ -32,9 +28,9 @@ const proc = spawn(COMMAND[0], COMMAND.slice(1), {
   env: { ...process.env },
 });
 
-proc.stderr.on("data", (chunk: Buffer) => {
+proc.stderr.on("data", (chunk) => {
   const line = chunk.toString().trim();
-  if (line) console.error(`[mcp stderr] ${line}`);
+  if (line) console.error("[mcp stderr]", line);
 });
 
 proc.on("exit", (code) => {
@@ -42,13 +38,13 @@ proc.on("exit", (code) => {
   process.exit(code || 1);
 });
 
-function send(msg: any): void {
+function send(msg) {
   const data = JSON.stringify(msg) + SEPARATOR;
-  proc.stdin!.write(data);
+  proc.stdin.write(data);
 }
 
 // Read JSON-RPC responses from the MCP server
-proc.stdout.on("data", (chunk: Buffer) => {
+proc.stdout.on("data", (chunk) => {
   buffer += chunk.toString();
 
   while (true) {
@@ -58,14 +54,12 @@ proc.stdout.on("data", (chunk: Buffer) => {
     const line = buffer.slice(0, idx).trim();
     buffer = buffer.slice(idx + 1);
 
-    if (!line) continue;
-    if (!line.startsWith("{")) continue;
+    if (!line || !line.startsWith("{")) continue;
 
     try {
       const msg = JSON.parse(line);
-      // Match response to pending request
       if (msg.id && pending.has(msg.id)) {
-        const req = pending.get(msg.id)!;
+        const req = pending.get(msg.id);
         clearTimeout(req.timer);
         pending.delete(msg.id);
         req.resolve(msg);
@@ -76,7 +70,7 @@ proc.stdout.on("data", (chunk: Buffer) => {
   }
 });
 
-function sendMcp(message: any, timeoutMs = 30000): Promise<any> {
+function sendMcp(message, timeoutMs = 30000) {
   return new Promise((resolve, reject) => {
     const id = message.id ?? nextId++;
     message.id = id;
@@ -89,19 +83,24 @@ function sendMcp(message: any, timeoutMs = 30000): Promise<any> {
   });
 }
 
-// Handle POST /mcp
-async function handleRequest(req: IncomingMessage, res: ServerResponse): Promise<void> {
+const server = http.createServer(async (req, res) => {
+  if (req.method === "GET" && req.url === "/health") {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ status: "ok", name: "mcp-hermes-atlas" }));
+    return;
+  }
+
   if (req.method !== "POST") {
     res.writeHead(405);
     res.end("Method not allowed");
     return;
   }
 
-  const chunks: Buffer[] = [];
+  const chunks = [];
   for await (const chunk of req) chunks.push(chunk);
   const body = Buffer.concat(chunks).toString();
 
-  let message: any;
+  let message;
   try {
     message = JSON.parse(body);
   } catch {
@@ -114,13 +113,12 @@ async function handleRequest(req: IncomingMessage, res: ServerResponse): Promise
     const response = await sendMcp(message, 60000);
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify(response));
-  } catch (err: any) {
+  } catch (err) {
     res.writeHead(504);
     res.end(JSON.stringify({ error: err.message }));
   }
-}
+});
 
-const server = createServer(handleRequest);
 server.listen(PORT, HOST, () => {
   console.log(`MCP bridge listening on http://${HOST}:${PORT}/mcp`);
   console.log(`Command: ${COMMAND.join(" ")}`);

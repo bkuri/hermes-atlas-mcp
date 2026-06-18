@@ -1,5 +1,5 @@
 {
-  "name": "hermes-atlas-mcp",
+  "name": "@bkuri/hermes-atlas-mcp",
   "version": "0.1.0",
   "description": "MCP server for the Hermes Atlas ecosystem directory — discover tools, skills, plugins, and integrations for Hermes Agent",
   "type": "module",

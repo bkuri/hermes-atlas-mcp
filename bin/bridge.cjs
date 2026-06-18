@@ -10,11 +10,27 @@ const { spawn } = require("node:child_process");
 
 const PORT = parseInt(process.env.PORT || "8080");
 const HOST = process.env.HOST || "0.0.0.0";
-const COMMAND = process.argv.slice(2);
-if (COMMAND.length === 0) {
-  console.error("Usage: node bridge.js [--port N] -- <command> [args...]");
+
+// Parse args: bridge flags before --, subprocess command after
+const rawArgs = process.argv.slice(2);
+const sepIdx = rawArgs.indexOf("--");
+if (sepIdx === -1 || sepIdx === rawArgs.length - 1) {
+  console.error("Usage: node bridge.cjs [--port N] -- <command> [args...]");
   process.exit(1);
 }
+const bridgeArgs = rawArgs.slice(0, sepIdx);
+const COMMAND = rawArgs.slice(sepIdx + 1);
+
+// Parse bridge flags
+for (let i = 0; i < bridgeArgs.length; i++) {
+  if (bridgeArgs[i] === "--port" && bridgeArgs[i + 1]) {
+    process.env.PORT = bridgeArgs[++i];
+  } else if (bridgeArgs[i] === "--host" && bridgeArgs[i + 1]) {
+    process.env.HOST = bridgeArgs[++i];
+  }
+}
+const PORT = parseInt(process.env.PORT || "8080");
+const HOST = process.env.HOST || "0.0.0.0";
 
 const SEPARATOR = "\n";
 let buffer = "";

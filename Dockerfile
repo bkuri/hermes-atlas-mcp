@@ -23,5 +23,7 @@ COPY --from=builder /build/node_modules/ ./node_modules/
 COPY bin/bridge.cjs ./bridge.cjs
 
 EXPOSE 8080
+ENV PORT=8080
+ENV HOST=0.0.0.0
 
-CMD ["node", "bridge.cjs", "--port", "8080", "--", "node", "dist/index.js"]
+CMD ["node", "bridge.cjs", "--", "node", "dist/index.js"]

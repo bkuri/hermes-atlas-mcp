@@ -1,0 +1,26 @@
+{
+  "name": "hermes-atlas-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for the Hermes Atlas ecosystem directory — discover tools, skills, plugins, and integrations for Hermes Agent",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "hermes-atlas-mcp": "dist/index.js",
+    "hermes-atlas-install": "dist/install-embeddings.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "install:embeddings": "node dist/install-embeddings.js"
+  },
+  "keywords": ["mcp", "hermes", "atlas", "ai-agent", "nous-research"],
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.8.0"
+  }
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "slug": "state-of-hermes-may-2026",
+    "title": "The State of Hermes Agent — May 2026",
+    "date": "2026-05-24",
+    "summary": "Six weeks after April: 165K stars, 22 messaging platforms, the Curator → Tenacity → Foundation release trilogy, a memory category that grew 15x, and the OAuth-proxy play turning Hermes into the subscription bus for the AI stack.",
+    "readTime": "10 min",
+    "kicker": "community report · may 2026"
+  },
+  {
+    "slug": "state-of-hermes-april-2026",
+    "title": "The State of Hermes Agent — April 2026",
+    "date": "2026-04-11",
+    "summary": "A community report on the first six weeks of Nous Research's self-improving AI agent. 57,200 stars, 80+ ecosystem projects, and what to watch for in Q2.",
+    "readTime": "10 min",
+    "kicker": "community report · q1 2026"
+  }
+]

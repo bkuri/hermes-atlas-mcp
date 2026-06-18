@@ -1,0 +1,38 @@
+[
+  {
+    "slug": "best-memory-providers",
+    "title": "Best Memory Providers for Hermes Agent",
+    "description": "The top community-built memory and context management tools for Hermes Agent, ranked by GitHub stars. Memory is what makes Hermes self-improving — these tools extend its built-in recall with long-term semantic memory, graph-based retrieval, and cross-session persistence.",
+    "filter": { "category": "Memory & Context" }
+  },
+  {
+    "slug": "top-skills",
+    "title": "Top Skills for Hermes Agent",
+    "description": "The most popular skills and skill registries in the Hermes ecosystem, ranked by GitHub stars. Skills are reusable capabilities that follow the agentskills.io open standard — from cybersecurity to diagram generation to creative ideation.",
+    "filter": { "category": "Skills & Skill Registries" }
+  },
+  {
+    "slug": "deployment-options",
+    "title": "Deployment Options for Hermes Agent",
+    "description": "How to deploy Hermes Agent in production — Docker images, Nix packages, systemd services, and managed cloud templates. From a $5 VPS to enterprise Kubernetes.",
+    "filter": { "category": "Deployment & Infra" }
+  },
+  {
+    "slug": "multi-agent-frameworks",
+    "title": "Multi-Agent Frameworks for Hermes",
+    "description": "Orchestration tools for running multiple Hermes agents together. Fleet management dashboards, swarm coordinators, and multi-agent delegation systems.",
+    "filter": { "category": "Multi-Agent & Orchestration" }
+  },
+  {
+    "slug": "developer-tools",
+    "title": "Developer Tools for Hermes Agent",
+    "description": "CLI tools, linters, migration helpers, token trackers, and other utilities that make developing with Hermes easier.",
+    "filter": { "category": "Developer Tools" }
+  },
+  {
+    "slug": "workspaces-and-guis",
+    "title": "Workspaces & GUIs for Hermes Agent",
+    "description": "Web-based and desktop interfaces that wrap Hermes Agent with visual UIs — chat interfaces, terminal emulators, memory browsers, and configuration dashboards.",
+    "filter": { "category": "Workspaces & GUIs" }
+  }
+]
